@@ -1,0 +1,148 @@
+HABILIDADES AGENTICAS DISPONIBLES EN SELLIUM
+==============================================
+
+REQUISITO
+---------
+El backend FastAPI debe estar iniciado en http://127.0.0.1:8000 y Ollama debe
+estar ejecutándose. La apertura de aplicaciones requiere:
+
+ENABLE_APP_LAUNCH=true
+
+
+1. ABRIR APLICACIONES DE WINDOWS
+--------------------------------
+Sellium puede abrir aplicaciones conocidas y aplicaciones encontradas en el
+menú Inicio o en el registro de Windows.
+
+Ejemplos:
+- Abre la calculadora
+- Inicia Visual Studio Code
+- Abre el bloc de notas
+- Ejecuta Paint
+- Abre el explorador
+- Inicia PowerShell
+- Abre configuración
+- Abre el administrador de tareas
+
+Aliases conocidos:
+- calculadora / calculator
+- bloc de notas / notepad
+- explorador / explorer
+- configuración / settings
+- visual studio code / vscode / code
+
+Las órdenes explícitas de abrir una aplicación se ejecutan aunque el modelo
+local no produzca correctamente una llamada de herramienta.
+
+
+2. BUSCAR APLICACIONES INSTALADAS
+---------------------------------
+Sellium busca coincidencias en accesos del menú Inicio, App Paths del registro
+de Windows y aliases del sistema.
+
+Ejemplos:
+- Busca aplicaciones llamadas Chrome
+- Encuentra Visual Studio Code
+- Busca apps llamadas Spotify
+
+La búsqueda no abre la aplicación salvo que también se solicite expresamente.
+
+
+3. CONSULTAR PROCESOS ACTIVOS
+-----------------------------
+El agente dispone de una herramienta para listar procesos en ejecución.
+
+Ejemplo:
+- ¿Qué aplicaciones están abiertas?
+
+La disponibilidad de esta función puede depender de los permisos de Windows.
+
+
+4. CONTROL DE NAVEGADOR Y PESTAÑAS
+----------------------------------
+Sellium puede abrir URLs en Chrome. Puede iniciar varias pestañas con sitios
+conocidos y búsquedas web en una misma orden.
+
+Ejemplos:
+- Abre Chrome con YouTube, Gmail y busca el significado de Amor
+- Abre Chrome con YouTube
+- Abre Chrome y busca recetas de pasta
+
+Para el primer ejemplo, abre estas tres pestañas:
+- https://www.youtube.com/
+- https://mail.google.com/
+- Una búsqueda de Google para "el significado de Amor"
+
+Chrome debe estar instalado y registrado en Windows. La herramienta admite
+hasta diez URLs por orden.
+
+
+5. CONTROL DE RATÓN
+-------------------
+El agente puede mover el cursor, hacer clic y desplazar la ventana situada
+bajo el puntero. Por seguridad operativa, las órdenes directas requieren
+coordenadas explícitas en píxeles de pantalla.
+
+Ejemplos:
+- Mueve el ratón a 500, 300
+- Haz clic en 500, 300
+- Haz doble clic en 500, 300
+- Haz clic derecho en 500, 300
+- Desplaza hacia abajo
+- Desplaza hacia arriba
+
+También puede consultar el tamaño del escritorio antes de indicar coordenadas.
+Las coordenadas empiezan en 0,0 en la esquina superior izquierda.
+
+
+6. BUSCAR ARCHIVOS DEL PROYECTO
+-------------------------------
+El agente puede buscar por nombre o contenido dentro del workspace autorizado.
+Por defecto, el workspace es la raíz del proyecto Sellium.
+
+Ejemplos:
+- Busca archivos que contengan API_URL
+- Encuentra index.html
+- Busca dónde se usa Ollama
+
+No puede salir del directorio configurado mediante AGENT_WORKSPACE.
+
+
+7. CREAR ARCHIVOS EN EL PROYECTO
+--------------------------------
+El agente puede crear archivos UTF-8 dentro del workspace autorizado.
+
+Ejemplos:
+- Crea un archivo notas.txt con una lista de tareas
+- Crea config.json con este contenido: ...
+
+No reemplaza un archivo existente salvo que la herramienta reciba
+overwrite=true. El asistente debe pedir confirmación antes de reemplazarlo.
+
+
+8. CONVERSACION CON MODELO LOCAL
+--------------------------------
+Las respuestas se generan con Ollama ejecutándose localmente. El modelo por
+defecto es qwen2.5-coder:7b, configurable con OLLAMA_MODEL.
+
+
+9. VOZ LOCAL
+------------
+- Voz a texto: Faster-Whisper procesa el audio del micrófono localmente.
+- Texto a voz: Piper genera un archivo WAV local para reproducir la respuesta.
+
+Los modelos de voz se cargan desde la carpeta models/ y no requieren Internet
+después de ser descargados.
+
+
+LIMITES ACTUALES
+---------------
+- No ejecuta comandos arbitrarios de shell.
+- No cierra procesos ni aplicaciones.
+- No pulsa teclas, lee contenido de pantalla ni reconoce elementos visuales todavía.
+- No puede administrar archivos fuera de AGENT_WORKSPACE.
+- No debe exponerse el backend fuera de localhost.
+
+Para ampliar el control del PC de forma segura, se pueden añadir módulos
+separados para automatización de ventanas, administración de procesos,
+operaciones de archivos y acciones del navegador.

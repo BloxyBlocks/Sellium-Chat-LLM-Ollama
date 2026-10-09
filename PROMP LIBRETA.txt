@@ -1,0 +1,40 @@
+##Contexto
+Actua como un desarrollador senior en Frontend web vanilla y moderna, requiero construir una web tipo jarvis chatbot avanzando, con la capacidad de escuchar (microfono), animaciones cuando la persona hable, animaciones super buenas en general.
+
+Este frontend sera usado para un programa de nombre "Sellium Chat LLM For Ollama", ya que usara IA local junto a ollama de una forma agentica (No digo que fabriques toda la conexion a ollama ni nada ya que de eso se encargara python con FastAPI).
+
+##Requerimientos
+- La web debe ser capaz de recibir audio, al hablar debe aver una animacion segun el tono de voz y la intencidad en decibelios procura que esta funcion sea acorde a los colores del proyecto.
+- La web tiene animaciones pro, capaz de mostrar animacion suaves.
+- La web debe ser capaz de conectarse a una fastAPI de python.
+- Al iniciar la web todo estara apagado y presionando varias veces la pantalla se muestra una animacion de cada pulsacion minimalista y luego de un tiempo se muestra todo el chatbot con una ligera animacion suave y tambien suena un sonido que yo configurare.
+- La web debe ser capaz de mostrar las respuestas del bot con animacion minimalista y si la IA llega a mandar codigo se debe mostrar una ventana con el codigo que genero la IA (como en chatgpt, gemini).
+##Diseño
+Colores:
+	- Color principal: #00d4ff
+	- Color secundario: #00a9d2
+	- Color oscuro: #003356
+	- El fondo puede ser negro total ya lo dejo a tu criterio de diseño
+Estilo:
+- Neon al igual que Jarvis
+
+Nuevas Funciones:
+
+- Deseo implementar un efecto de sonido en cada golpe que se da con el cursor al iniciar el programa, este debe ser configurable
+- Implementa el efecto de sonido al iniciar como BOOT_SOUND: 'Assets/Sound/run.mp3'
+- Implementa la funcion de que cuando le doy click a <canvas id="orb" width="824" height="230"></canvas> se mueva o se deforme la animacion puede ser como tu lo desees, la cosa es que debe ser incrementable, al primer toque se amplia o algo a similar y se va ampliando, si se deja el raton precionando el objeto este se deforme o siga un poco  la direccion del cursor.
+
+Nuevas Funciones 2:
+
+- Deseo implementar una nueva animacion durante la carga o el boot al iniciar la app, y es que el sonido o el efecto de sonido de inicio o arranque (BOOT_SOUND: 'Assets/Sound/run2.mp3') dura aproximandamente 7 segundos y quiero que al final el  <canvas id="orb" width="824" height="230"></canvas> tenga un efecto de ojo como parpadeo donde no hay nada y como que abre el ojo, durante ese efecto tambien hay un efecto de sonido de mas para cuando inicie el boot al final se de el efecto de parpadeo y el efect de sonido.
+- En la pantalla de que hay que dar toques para iniciar el proyecto quiero un efecto de zoom animado con cada click, donde cada click aumenta con un zoom y este se va retrocediendo muy despacio asta agrandarlo con el ultimo toque y inicie
+
+Fase 2: Módulo de Voz Local (STT + TTS)
+Integrar Faster-Whisper en el backend para capturar audio directamente desde el micrófono de la Web API o del sistema.
+
+Integrar Piper-TTS para que JARVIS responda hablando en español con latencia inferior a 200ms.
+Tode debe ser de forma local por lo que deben implementarlo para que funcione sin internet la voz que mas me gusto es sharvard[medium] en su version Masculina.
+
+INICIAR API:
+.\.venv\Scripts\Activate.ps1
+uvicorn backend.main:app --reload --port 8000
