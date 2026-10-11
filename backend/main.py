@@ -42,8 +42,9 @@ KNOWN_APPS = {
 app = FastAPI(title="Sellium Local Agent", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    # Navegador normal y WebView de Tauri v2. Sin estos orígenes el preflight
-    # OPTIONS del cliente nativo se rechaza antes de llegar a /api/chat o /api/tts.
+    # El servidor Vite usa un puerto variable (normalmente 5173). Para CORS,
+    # ``http://localhost`` y ``http://localhost:5173`` son orígenes distintos.
+    # Aceptamos sólo loopback, además de los esquemas propios de Tauri.
     allow_origins=[
         "http://localhost",
         "http://127.0.0.1",
@@ -51,6 +52,10 @@ app.add_middleware(
         "tauri://localhost",
         "null",
     ],
+    allow_origin_regex=(
+        r"^https?://(?:localhost|127\.0\.0\.1)(?::\d+)?$"
+        r"|^https?://tauri\.localhost(?::\d+)?$"
+    ),
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

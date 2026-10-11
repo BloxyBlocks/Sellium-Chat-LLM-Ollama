@@ -2,6 +2,16 @@
 
 El frontend ya apunta a `http://localhost:8000/api/chat`. Este backend transmite las respuestas de Ollama por SSE y permite al modelo utilizar herramientas locales controladas.
 
+## Interfaz y arranque cinematográfico
+
+El chat original se ha restaurado e integrado con el boot WebGL actual. La pantalla de inicio usa Three.js y GSAP; al terminar revela la interfaz completa sin modificar sus rutas locales ni el protocolo de streaming.
+
+- `index.html` reúne el marcado del boot y del chat, además de su lógica de interacción.
+- `style.css` separa los estilos del boot y de la interfaz del chat.
+- `boot.js` contiene exclusivamente la secuencia WebGL reutilizable.
+
+Se mantienen el chat SSE con Ollama, historial de conversación, renderizado de Markdown/código con botón de copiar, visualizador interactivo, micrófono/STT y voz TTS. El inicio requiere cinco toques: cada uno reproduce `Assets/Sound/golpe.mp3` y amplía la animación; el último reproduce `Assets/Sound/run2.mp3` y da paso al boot WebGL. Al finalizar, el orbe aparece con el parpadeo y sonido originales. Estos valores se pueden ajustar en `CFG` dentro de `index.html` (`TAP_SOUND`, `TAP_VOLUME`, `BOOT_SOUND`, `BOOT_VOLUME`, `BLINK_SOUND` y `BLINK_VOLUME`). Durante la aplicación, presiona `R` para volver a ejecutar el arranque (cuando no haya una respuesta en curso).
+
 ## Inicio
 
 En PowerShell, desde la raíz del proyecto:
@@ -53,7 +63,7 @@ El botón de micrófono del frontend ahora graba con `MediaRecorder`, envía el 
 `python scripts/download_voice_models.py` necesita Internet **una única vez** para guardar los modelos en `models/`:
 
 - Faster-Whisper `small` para español.
-- Piper `es_ES-sharvard-medium` (incluye dos locutores). La configuración predeterminada usa `PIPER_SPEAKER_ID=0`, que corresponde a `M` (masculino).
+- Piper `es_ES-davefx-medium`, voz masculina de español de España y un solo locutor. La síntesis predeterminada usa velocidad `1.1x` (`PIPER_SPEED=1.1`) y ruido `0.5` (`PIPER_NOISE_SCALE=0.5`).
 
 En ejecuciones posteriores, el backend solo abre esos archivos locales; no transmite audio ni texto a servicios externos. La primera petición calienta los modelos y será más lenta. La meta de ~200 ms se aplica a la síntesis Piper ya cargada y a frases cortas, pero no puede garantizarse en todos los equipos ni incluye el tiempo de generación de Ollama o de la red local.
 
@@ -66,4 +76,4 @@ npm install
 npm run build
 ```
 
-El instalador NSIS se crea en `src-tauri/target/release/bundle/nsis/`. Esta primera versión nativa consume el backend local existente en `http://localhost:8000`; inicia FastAPI/Ollama antes de abrir la aplicación. La incorporación de Python, modelos de Whisper/Piper y Ollama como *sidecars* autocontenidos se realizará como una fase de empaquetado separada, porque añade varios GB al instalador.
+El instalador NSIS se crea en `src-tauri/target/release/bundle/nsis/`. El bundle incluye los archivos `es_ES-davefx-medium.onnx` y `es_ES-davefx-medium.onnx.json` como recursos; antes de compilar, ejecuta `python scripts/download_voice_models.py` para que estén disponibles. Esta primera versión nativa consume el backend local existente en `http://localhost:8000`; inicia FastAPI/Ollama antes de abrir la aplicación. La incorporación de Python, modelos de Whisper/Piper y Ollama como *sidecars* autocontenidos se realizará como una fase de empaquetado separada, porque añade varios GB al instalador.

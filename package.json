@@ -6,9 +6,28 @@
   "scripts": {
     "build:web": "node scripts/build-web.mjs",
     "tauri": "tauri",
-    "build": "npm run build:web && tauri build"
+    "dev": "vite", 
+    "build": "vite build" 
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0"
+    "@tauri-apps/cli": "^2.0.0",
+    "vite": "^8.3.4"
+  },
+  "description": "El frontend ya apunta a `http://localhost:8000/api/chat`. Este backend transmite las respuestas de Ollama por SSE y permite al modelo utilizar herramientas locales controladas.",
+  "main": "boot.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BloxyBlocks/Sellium-Chat-LLM-Ollama.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BloxyBlocks/Sellium-Chat-LLM-Ollama/issues"
+  },
+  "homepage": "https://github.com/BloxyBlocks/Sellium-Chat-LLM-Ollama#readme",
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "three": "^0.186.1"
   }
 }

@@ -11,10 +11,13 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 WHISPER_MODEL = Path(os.getenv("WHISPER_MODEL_PATH", PROJECT_ROOT / "models" / "faster-whisper-small"))
-PIPER_MODEL = Path(os.getenv("PIPER_MODEL_PATH", PROJECT_ROOT / "models" / "piper" / "es_ES-sharvard-medium.onnx"))
+PIPER_MODEL = Path(os.getenv("PIPER_MODEL_PATH", PROJECT_ROOT / "models" / "piper" / "es_ES-davefx-medium.onnx"))
 WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
 WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
-PIPER_SPEAKER_ID = int(os.getenv("PIPER_SPEAKER_ID", "0"))  # sharvard: M=0, F=1
+# Davefx es una voz de un solo locutor; se conserva el ID por compatibilidad.
+PIPER_SPEAKER_ID = int(os.getenv("PIPER_SPEAKER_ID", "0"))
+PIPER_SPEED = float(os.getenv("PIPER_SPEED", "1.1"))
+PIPER_NOISE_SCALE = float(os.getenv("PIPER_NOISE_SCALE", "0.5"))
 
 
 class VoiceUnavailable(RuntimeError):
@@ -74,6 +77,15 @@ def synthesize_wav(text: str) -> bytes:
     voice = piper_voice()  # valida el modelo antes de abrir el contenedor WAV
     output = io.BytesIO()
     with wave.open(output, "wb") as wav_file:
-        config = SynthesisConfig(speaker_id=PIPER_SPEAKER_ID)
+        if PIPER_SPEED <= 0:
+            raise VoiceUnavailable("PIPER_SPEED debe ser mayor que 0.")
+        if PIPER_NOISE_SCALE < 0:
+            raise VoiceUnavailable("PIPER_NOISE_SCALE no puede ser negativo.")
+        # En Piper, length_scale es inversamente proporcional a la velocidad.
+        config = SynthesisConfig(
+            speaker_id=PIPER_SPEAKER_ID,
+            length_scale=1 / PIPER_SPEED,
+            noise_scale=PIPER_NOISE_SCALE,
+        )
         voice.synthesize_wav(text.strip(), wav_file, syn_config=config)
     return output.getvalue()

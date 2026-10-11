@@ -25,6 +25,10 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis"]
+    "targets": ["nsis"],
+    "resources": [
+      "../models/piper/es_ES-davefx-medium.onnx",
+      "../models/piper/es_ES-davefx-medium.onnx.json"
+    ]
   }
 }

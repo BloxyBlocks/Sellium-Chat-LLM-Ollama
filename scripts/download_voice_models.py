@@ -11,8 +11,8 @@ from huggingface_hub import snapshot_download
 ROOT = Path(__file__).resolve().parent.parent
 MODELS = ROOT / "models"
 PIPER_DIR = MODELS / "piper"
-PIPER_BASE = "https://huggingface.co/rhasspy/piper-voices/resolve/main/es/es_ES/sharvard/medium/"
-PIPER_FILES = ("es_ES-sharvard-medium.onnx", "es_ES-sharvard-medium.onnx.json")
+PIPER_BASE = "https://huggingface.co/rhasspy/piper-voices/resolve/main/es/es_ES/davefx/medium/"
+PIPER_FILES = ("es_ES-davefx-medium.onnx", "es_ES-davefx-medium.onnx.json")
 
 
 def download(url: str, destination: Path) -> None:

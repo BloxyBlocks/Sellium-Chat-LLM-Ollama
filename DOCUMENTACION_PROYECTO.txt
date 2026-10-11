@@ -1,0 +1,161 @@
+SELLIUM - CHAT LLM LOCAL CON OLLAMA
+
+Descripcion breve:
+Sellium es un proyecto de chat con IA local y asistente de escritorio, pensado para ejecutarse en localhost sin depender de servicios cloud. Permite conversar con un modelo local de Ollama, mostrar respuestas en streaming, usar herramientas del equipo y ejecutar funciones locales con control de seguridad. La interfaz combina un boot visual con animaciones y una experiencia de chat funcional para uso diario.
+
+Objetivo principal:
+- Ejecutar un asistente inteligente localmente con Ollama.
+- Integrar chat con streaming SSE (Server-Sent Events).
+- Permitir que el modelo use herramientas del sistema dentro de un entorno controlado.
+- Soportar voz local (transcripcion y sintetizacion) sin enviar audio o texto a servicios externos.
+- Empaquetar la aplicacion como desktop con Tauri v2.
+
+Arquitectura general:
+- Frontend: HTML, CSS, JavaScript, Vite.
+- Backend: Python con FastAPI y Uvicorn.
+- Modelo LLM: Ollama, con modelo predeterminado qwen2.5-coder:7b.
+- Audio local: Faster-Whisper para STT y Piper TTS para voz.
+- App nativa: Tauri v2 para Windows.
+- Animaciones visuales: Three.js y GSAP.
+
+Tecnologias principales y para que las usa:
+
+1. Python
+   - Base del backend.
+   - Ejecuta el servidor FastAPI y coordina la comunicacion con Ollama.
+   - Gestiona herramientas locales y endpoints REST para chat, voz y control del sistema.
+
+2. FastAPI
+   - Crea la API del backend.
+   - Expone endpoints de chat, STT, TTS y otras operaciones.
+   - Maneja validacion de peticiones con Pydantic y respuestas JSON/streaming.
+
+3. Uvicorn
+   - Sirve la aplicacion FastAPI.
+   - Se usa en modo desarrollo con --reload y puerto 8000.
+
+4. Ollama
+   - Proporciona el modelo local de lenguaje que responde a las preguntas del usuario.
+   - El proyecto esta configurado para usar qwen2.5-coder:7b por defecto.
+   - Se conecta desde el backend para obtener respuestas generadas localmente.
+
+5. HTML, CSS y JavaScript
+   - Construyen la interfaz del chat y del arranque visual.
+   - Se separan los estilos y la logica de visualizacion.
+   - Permiten renderizar markdown, codigo, botones de copia y manejar el flujo del chat.
+
+6. Three.js
+   - Genera la escena visual del boot y de la animacion inicial.
+   - Se usa para crear el efecto visual del orbe / arranque cinematografico.
+
+7. GSAP
+   - Controla la animacion de la introduccion visual y transiciones del inicio.
+   - Ayuda a crear la secuencia visual con timing y efecto dinamico.
+
+8. Vite
+   - Sirve y compila el frontend web del proyecto.
+   - Se usa para el build del sitio y la ejecucion local en desarrollo.
+
+9. Tauri v2
+   - Empaqueta la aplicacion como software de escritorio para Windows.
+   - Integra el frontend con la ejecucion del backend local existente.
+
+10. Faster-Whisper
+    - Se usa para transcripcion de voz a texto (STT).
+    - Procesa archivos de audio localmente en el equipo.
+
+11. Piper TTS
+    - Genera voz sintetizada en audio WAV.
+    - Se usa para responder verbalmente al usuario.
+    - Voz predeterminada: `es_ES-davefx-medium` (español de España, un solo locutor).
+    - La síntesis usa velocidad 1,1x y ruido 0,5. Internamente Piper recibe
+      `length_scale=1/1.1`, porque este parámetro es inverso a la velocidad,
+      y `noise_scale=0.5`.
+
+12. HTTPX
+    - Facilita las peticiones HTTP desde Python al servidor de Ollama y otros servicios locales.
+
+13. Pydantic
+    - Validacion de modelos de entrada/salida en FastAPI.
+    - Define estructuras como ChatRequest y TTSRequest.
+
+14. python-multipart
+    - Permite recibir archivos de audio en las rutas de transcripcion.
+
+15. huggingface-hub
+    - Puede ser util para descargar o gestionar recursos del ecosistema de modelos.
+
+Librerias y dependencias principales:
+- Python:
+  * fastapi
+  * uvicorn[standard]
+  * httpx
+  * faster-whisper
+  * piper-tts
+  * python-multipart
+  * huggingface-hub
+
+- Node / Frontend:
+  * three
+  * gsap
+  * vite
+  * @tauri-apps/cli
+
+Caracteristicas del proyecto:
+- Chat con modelo local de Ollama.
+- Streaming de respuestas por SSE.
+- Historial de conversaciones.
+- Renderizado de Markdown y codigo con copia de texto.
+- Visualizador interactivo de contenido.
+- Soporte de micrófono y transcripcion por voz.
+- Respuesta de voz con sintetizador local.
+- Control de aplicaciones locales en Windows.
+- Busqueda de archivos dentro del workspace permitido.
+- Creacion de archivos en rutas autorizadas.
+- Apertura de aplicaciones conocidas (calculadora, VS Code, explorador, navegador, etc.).
+- Consulta de procesos activos del sistema.
+- Apertura de URLs en navegador.
+- Seguridad orientada a localhost y rutas restringidas.
+- Opcion de activar o desactivar control de aplicaciones con variable ENABLE_APP_LAUNCH.
+- Estructura preparada para trabajar en un entorno local y sin exposicion a internet.
+
+Estructura clave del repositorio:
+- backend/main.py: API principal y herramientas del asistente local.
+- backend/voice.py: servicios de transcripcion y sintetizacion de voz.
+- index.html: interfaz principal combinada con boot visual.
+- style.css: estilos del proyecto.
+- boot.js: secuencia WebGL reutilizable del arranque.
+- js/: logica JS del frontend.
+- Assets/: recursos visuales y de audio del boot.
+- models/: modelos locales de voz Whisper/Piper.
+- src-tauri/: aplicacion desktop Tauri v2.
+- scripts/: utilidades del proyecto.
+
+Configuracion de voz Piper:
+- `backend/voice.py` carga por defecto `models/piper/es_ES-davefx-medium.onnx`.
+- `scripts/download_voice_models.py` descarga tanto el modelo ONNX como su
+  configuracion `es_ES-davefx-medium.onnx.json`; ambos archivos son necesarios.
+- Las variables opcionales `PIPER_SPEED` (predeterminada `1.1`) y
+  `PIPER_NOISE_SCALE` (predeterminada `0.5`) permiten ajustar esos valores sin
+  editar el codigo. `PIPER_SPEAKER_ID=0` se conserva por compatibilidad, aunque
+  Davefx solo tiene un locutor.
+- `src-tauri/tauri.conf.json` declara los dos archivos de Davefx como recursos
+  del instalador NSIS. Antes de ejecutar el build de Tauri se debe correr
+  `python scripts/download_voice_models.py` para descargarlos.
+
+Flujo de uso habitual:
+1. Instalar dependencias de Python y Node.
+2. Ejecutar Ollama localmente con un modelo descargado.
+3. Iniciar el backend FastAPI en localhost:8000.
+4. Cargar la interfaz del chat en navegador o la aplicacion desktop.
+5. Chatear con el modelo y usar herramientas locales si se habilitan.
+6. Usar voz para transcribir audio o escuchar respuestas sintetizadas.
+
+Modo de seguridad implementado:
+- Las operaciones de archivo estan limitadas al workspace del proyecto.
+- No se permite salir del directorio autorizado mediante rutas relativas invalidas.
+- Las funciones de apertura de programas solo se habilitan si el usuario lo solicita con claridad.
+- El servicio esta pensado para ejecutarse en localhost y no debe exponerse a la red.
+
+Resumen final:
+Sellium es un asistente local con IA, pensado para operar de manera privada y segura en equipos Windows. Combina un backend en Python con FastAPI, un modelo local de Ollama, herramientas del sistema, voz local con Faster-Whisper y Piper, un frontend moderno y una version desktop con Tauri. Es una solucion ideal para prototipos, automatizacion local y uso de IA sin depender del cloud.
