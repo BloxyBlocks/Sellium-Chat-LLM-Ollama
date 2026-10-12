@@ -1,0 +1,10 @@
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\icu_normalizer-0703c6a75ae1d7ab.d: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\lib.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\properties.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\provider.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\uts46.rs
+
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\libicu_normalizer-0703c6a75ae1d7ab.rlib: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\lib.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\properties.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\provider.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\uts46.rs
+
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\libicu_normalizer-0703c6a75ae1d7ab.rmeta: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\lib.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\properties.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\provider.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\uts46.rs
+
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\lib.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\properties.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\provider.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\icu_normalizer-2.3.0\src\uts46.rs:

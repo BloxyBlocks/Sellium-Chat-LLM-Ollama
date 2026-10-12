@@ -159,3 +159,14 @@ Modo de seguridad implementado:
 
 Resumen final:
 Sellium es un asistente local con IA, pensado para operar de manera privada y segura en equipos Windows. Combina un backend en Python con FastAPI, un modelo local de Ollama, herramientas del sistema, voz local con Faster-Whisper y Piper, un frontend moderno y una version desktop con Tauri. Es una solucion ideal para prototipos, automatizacion local y uso de IA sin depender del cloud.
+
+VIVA EL CODIGO ABIERTO:
+.venv/
+__pycache__/
+*.py[cod]
+.env
+models/
+node_modules/
+dist/
+src-tauri/target/
+

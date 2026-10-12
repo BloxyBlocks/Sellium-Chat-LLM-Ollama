@@ -1,0 +1,10 @@
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\cargo_toml-f22b0737340adafc.d: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\cargo_toml.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\afs.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\error.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\inheritable.rs
+
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\libcargo_toml-f22b0737340adafc.rlib: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\cargo_toml.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\afs.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\error.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\inheritable.rs
+
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\libcargo_toml-f22b0737340adafc.rmeta: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\cargo_toml.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\afs.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\error.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\inheritable.rs
+
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\cargo_toml.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\afs.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\error.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cargo_toml-1.0.1\src\inheritable.rs:

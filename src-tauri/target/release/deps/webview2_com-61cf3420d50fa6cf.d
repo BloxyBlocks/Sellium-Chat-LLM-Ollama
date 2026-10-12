@@ -1,0 +1,10 @@
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\webview2_com-61cf3420d50fa6cf.d: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\lib.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\callback.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\options.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\pwstr.rs
+
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\libwebview2_com-61cf3420d50fa6cf.rlib: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\lib.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\callback.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\options.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\pwstr.rs
+
+C:\xampp\htdocs\Sellium Chat LLM Ollama\src-tauri\target\release\deps\libwebview2_com-61cf3420d50fa6cf.rmeta: C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\lib.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\callback.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\options.rs C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\pwstr.rs
+
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\lib.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\callback.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\options.rs:
+C:\Users\PC\ GAMER\ i5\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\webview2-com-0.39.1\src\pwstr.rs:

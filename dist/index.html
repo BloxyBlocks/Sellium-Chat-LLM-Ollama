@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SELLIUM CHAT</title>
+  <script type="module" crossorigin src="/assets/index-DAQqZ3Z0.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C_K75Uao.css">
+</head>
+<body data-s="idle">
+<!-- Activación original: cinco toques antes de ejecutar el boot WebGL. -->
+<div id="boot" role="button" tabindex="0" aria-label="Toca cinco veces para iniciar Sellium">
+  <div id="bz">
+    <div class="rings"></div>
+    <div class="hint"><div class="core"></div><div class="dots" id="dots"></div><span>TOCA PARA DESPERTAR</span></div>
+  </div>
+  <div id="bload"><div class="lc"></div><span>INICIALIZANDO</span><div class="pb"><i></i></div></div>
+</div>
+<div id="flash"></div>
+<!-- Arranque WebGL/HUD de Sellium -->
+<div class="boot-fx" aria-hidden="true">
+  <canvas id="boot-canvas"></canvas>
+  <div class="boot-vignette"></div>
+  <div class="boot-axis"></div>
+  <div class="boot-scan"></div>
+  <div class="boot-corner tl">SELLIUM // CORE<br><b>BOOT SEQ 01</b></div>
+  <div class="boot-corner tr">SYS <b data-tele="hex">0x000000</b><br><b>LINK ESTABLE</b></div>
+  <div class="boot-corner bl">NÚCLEO <b>v1.0</b><br><b>ENC AES-256</b></div>
+  <div class="boot-corner br"><b data-tele="time">T+0.00s</b><br><b>60 FPS</b></div>
+  <div class="boot-hud"><h1 class="boot-title">SELLIUM</h1></div>
+  <div class="boot-foot">
+    <p class="boot-status">INICIALIZANDO</p>
+    <div class="boot-sub"><span class="boot-pct">000%</span><div class="boot-bar"><i></i></div><span class="boot-mod">MÓD 00/12</span></div>
+  </div>
+</div>
+<main id="app">
+  <header>
+    <div class="brand">SELLIUM <span>CHAT</span></div>
+    <div class="status"><b></b><span id="stxt">En espera</span></div>
+  </header>
+  <section class="main-layout" aria-label="Consola del asistente">
+    <aside id="system-panel" class="system-panel" aria-live="polite">
+      <div class="panel-title"><span>ESTADO DEL SISTEMA</span><small id="metrics-status">CONECTANDO</small></div>
+      <div class="metrics-grid">
+        <div class="metric"><span>CPU</span><strong id="cpu-value">--</strong><i><b id="cpu-bar"></b></i></div>
+        <div class="metric"><span>RAM</span><strong id="ram-value">--</strong><i><b id="ram-bar"></b></i></div>
+        <div class="metric"><span>DISCO</span><strong id="disk-value">--</strong><i><b id="disk-bar"></b></i></div>
+        <div class="metric"><span>GPU</span><strong id="gpu-value">N/D</strong><i><b id="gpu-bar"></b></i></div>
+      </div>
+      <div class="system-readout"><span>ENLACE LOCAL</span><b>PROTEGIDO</b><span>VOZ PIPER</span><b>LISTA</b></div>
+    </aside>
+    <section class="dashboard-layout" aria-label="Chat de Sellium">
+      <canvas id="orb" aria-label="Visualizador de actividad de voz"></canvas>
+      <section class="conversation-zone" aria-label="Conversación">
+        <section id="log" aria-live="polite"></section>
+      </section>
+      <form id="form" autocomplete="off">
+        <textarea id="inp" rows="1" placeholder="Escribe o activa el micrófono…"></textarea>
+        <button type="button" class="ib" id="mic" aria-label="Activar micrófono"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <button type="submit" class="ib" id="send" aria-label="Enviar" disabled><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+    </section>
+    <section class="visual-zone" aria-label="Modelo tridimensional del asistente">
+      <div id="avatar-stage" class="avatar-stage" aria-label="Avatar tridimensional de Sellium. Arrastra con el cursor para girarlo.">
+        <canvas id="avatar-canvas"></canvas>
+        <div class="avatar-label">AVATAR CENTRAL <span>ACTIVO</span></div>
+        <p>ARRASTRA PARA ROTAR · RUEDA PARA ACERCAR</p>
+      </div>
+    </section>
+  </section>
+</main>
+</body>
+</html>
