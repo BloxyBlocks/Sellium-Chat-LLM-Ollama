@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Sellium Chat LLM Ollama</title>
+<title>SELLIUM CHAT</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-s="idle">
@@ -34,30 +34,59 @@
 </div>
 <main id="app">
   <header>
-    <div class="brand">SELLIUM</div>
+    <div class="brand">SELLIUM <span>CHAT</span></div>
     <div class="status"><b></b><span id="stxt">En espera</span></div>
   </header>
-  <canvas id="orb"></canvas>
-  <section id="log" aria-live="polite"></section>
-  <form id="form" autocomplete="off">
-    <textarea id="inp" rows="1" placeholder="Escribe o activa el micrÃ³fonoâ€¦"></textarea>
-    <button type="button" class="ib" id="mic" aria-label="Activar micrÃ³fono"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-    <button type="submit" class="ib" id="send" aria-label="Enviar" disabled><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-  </form>
+  <section class="main-layout" aria-label="Consola del asistente">
+    <aside id="system-panel" class="system-panel" aria-live="polite">
+      <div class="panel-title"><span>ESTADO DEL SISTEMA</span><small id="metrics-status">CONECTANDO</small></div>
+      <div class="metrics-grid">
+        <div class="metric"><span>CPU</span><strong id="cpu-value">--</strong><i><b id="cpu-bar"></b></i></div>
+        <div class="metric"><span>RAM</span><strong id="ram-value">--</strong><i><b id="ram-bar"></b></i></div>
+        <div class="metric"><span>DISCO</span><strong id="disk-value">--</strong><i><b id="disk-bar"></b></i></div>
+        <div class="metric"><span>GPU</span><strong id="gpu-value">N/D</strong><i><b id="gpu-bar"></b></i></div>
+      </div>
+      <div class="system-readout"><span>ENLACE LOCAL</span><b>PROTEGIDO</b><span>VOZ PIPER</span><b>LISTA</b></div>
+    </aside>
+    <section class="dashboard-layout" aria-label="Chat de Sellium">
+      <canvas id="orb" aria-label="Visualizador de actividad de voz"></canvas>
+      <section class="conversation-zone" aria-label="Conversación">
+        <section id="log" aria-live="polite"></section>
+      </section>
+      <form id="form" autocomplete="off">
+        <textarea id="inp" rows="1" placeholder="Escribe o activa el micrófono…"></textarea>
+        <button type="button" class="ib" id="mic" aria-label="Activar micrófono"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <button type="submit" class="ib" id="send" aria-label="Enviar" disabled><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </form>
+    </section>
+    <section class="visual-zone" aria-label="Modelo tridimensional del asistente">
+      <div id="avatar-stage" class="avatar-stage" aria-label="Avatar tridimensional de Sellium. Arrastra con el cursor para girarlo.">
+        <canvas id="avatar-canvas"></canvas>
+        <div class="avatar-label">AVATAR CENTRAL <span>ACTIVO</span></div>
+        <p>ARRASTRA PARA ROTAR · RUEDA PARA ACERCAR</p>
+      </div>
+    </section>
+  </section>
 </main>
 <script type="module">
 import { play } from './boot.js';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import humanModelUrl from './models_3d/low_poly_human_template/scene.gltf?url';
+import humanModelBinUrl from './models_3d/low_poly_human_template/scene.bin?url';
 
-/* =================== CONFIGURACIÃ“N =================== */
+/* =================== CONFIGURACIÓN =================== */
 const CFG = {
   API_URL: 'http://localhost:8000/api/chat', // tu endpoint FastAPI (POST, respuesta en streaming)
   STT_URL: 'http://localhost:8000/api/stt',
   TTS_URL: 'http://localhost:8000/api/tts',
+  SYSTEM_STATS_URL: 'http://localhost:8000/api/system/stats',
   VOICE_ENABLED: true, // Faster-Whisper + Piper locales en el backend
-  BOOT_SOUND: 'Assets/Sound/run2.mp3', // sonido de arranque (~7 s). Al terminar se abre el ojo. VacÃ­o = sintÃ©tico
+  WELCOME_MESSAGE: 'Bienvenido señor, ¿en qué está pensando hoy?',
+  BOOT_SOUND: 'Assets/Sound/run2.mp3', // sonido de arranque (~7 s). Al terminar se abre el ojo. Vacío = sintético
   BOOT_VOLUME: .8,    // volumen del audio de arranque (0 a 1)
   BOOT_DURATION: 7000, // ms de respaldo si el audio no carga (la barra y el parpadeo usan la duraciÃ³n real del audio)
-  BLINK_SOUND: '',     // sonido extra del parpadeo, ej: 'Assets/Sound/blink.mp3' (vacÃ­o = sintÃ©tico)
+  BLINK_SOUND: '',     // sonido extra del parpadeo, ej: 'Assets/Sound/blink.mp3' (vacío = sintético)
   BLINK_VOLUME: .7,
   BLINK_DURATION: 1700, // ms que dura el parpadeo del orbe
   ZOOM_STEP: .18,      // cuÃ¡nto crece el zoom con cada toque
@@ -77,6 +106,97 @@ const body = document.body, log = $('log'), inp = $('inp'), send = $('send'), mi
 const LABELS = {idle:'En espera', listening:'Escuchando', thinking:'Pensando', speaking:'Respondiendo'};
 const history = [];
 function setState(s){ body.dataset.s = s; $('stxt').textContent = LABELS[s]; }
+
+/* =================== TELEMETRÍA LOCAL =================== */
+let statsTimer = null;
+function metric(id, value, detail = ''){
+  const available = Number.isFinite(value);
+  $(id + '-value').textContent = available ? `${Math.round(value)}%` : 'N/D';
+  $(id + '-bar').style.width = available ? `${Math.max(0, Math.min(100, value))}%` : '0%';
+  $(id + '-value').title = detail;
+}
+async function refreshSystemStats(){
+  try{
+    const res = await fetch(CFG.SYSTEM_STATS_URL, {cache:'no-store'});
+    if (!res.ok) throw new Error('Métricas no disponibles');
+    const data = await res.json();
+    metric('cpu', data.cpu?.percent);
+    metric('ram', data.memory?.percent, data.memory?.total_gb ? `${data.memory.used_gb} / ${data.memory.total_gb} GB` : '');
+    metric('disk', data.disk?.percent, data.disk?.total_gb ? `${data.disk.used_gb} / ${data.disk.total_gb} GB` : '');
+    metric('gpu', data.gpu?.percent);
+    $('metrics-status').textContent = 'EN LÍNEA';
+  }catch(err){
+    $('metrics-status').textContent = 'SIN CONEXIÓN';
+  }
+}
+function startSystemStats(){
+  if (statsTimer) return;
+  refreshSystemStats();
+  statsTimer = setInterval(refreshSystemStats, 4000);
+}
+
+/* =================== AVATAR 3D (THREE.JS) =================== */
+const avatarStage = $('avatar-stage'), avatarCanvas = $('avatar-canvas');
+function createAvatar3D(){
+  const renderer = new THREE.WebGLRenderer({canvas: avatarCanvas, alpha:true, antialias:true, powerPreference:'low-power'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, .1, 100);
+  camera.position.set(0, 1.1, 7.2);
+  const avatar = new THREE.Group(); scene.add(avatar);
+  const floor = new THREE.Mesh(new THREE.RingGeometry(1.35, 2.25, 48), new THREE.MeshBasicMaterial({color:0x00bfe8, transparent:true, opacity:.25, side:THREE.DoubleSide}));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -1.03; scene.add(floor);
+  scene.add(new THREE.HemisphereLight(0xa9f9ff, 0x00111b, 2.1));
+  const key = new THREE.DirectionalLight(0xb7fbff, 3.2); key.position.set(3, 5, 5); scene.add(key);
+  const rim = new THREE.PointLight(0x00bfe8, 18, 8); rim.position.set(-2, 1, 2); scene.add(rim);
+  const loader = new GLTFLoader();
+  fetch(humanModelUrl)
+    .then(response => { if (!response.ok) throw new Error('No se pudo leer el modelo glTF.'); return response.json(); })
+    .then(asset => {
+      // El .bin se importa como asset para que Vite conserve el enlace en producción.
+      asset.buffers[0].uri = humanModelBinUrl;
+      loader.parse(JSON.stringify(asset), '', gltf => {
+        const model = gltf.scene;
+        model.traverse(node => {
+          if (!node.isMesh) return;
+          node.material = new THREE.MeshStandardMaterial({color:0x0caed2, emissive:0x003346, emissiveIntensity:.4, roughness:.62, metalness:.28, flatShading:true, side:THREE.DoubleSide});
+          node.castShadow = node.receiveShadow = false;
+        });
+        model.scale.setScalar(1.14);
+        const bounds = new THREE.Box3().setFromObject(model), center = bounds.getCenter(new THREE.Vector3());
+        model.position.x = -center.x; model.position.z = -center.z; model.position.y = -1 - bounds.min.y;
+        avatar.add(model);
+      }, error => { console.warn('El archivo glTF es inválido:', error); avatarStage.classList.add('avatar-unavailable'); });
+    })
+    .catch(error => { console.warn('No se pudo cargar el modelo humano:', error); avatarStage.classList.add('avatar-unavailable'); });
+  let yaw = -.35, targetYaw = yaw, pitch = 0, targetPitch = 0, distance = 7.4, dragging = false, previous = null;
+  function resize(){
+    const {width, height} = avatarStage.getBoundingClientRect();
+    renderer.setSize(width, height, false); camera.aspect = width / Math.max(height, 1); camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(avatarStage); resize();
+  avatarStage.addEventListener('pointerdown', event => { dragging = true; previous = {x:event.clientX, y:event.clientY}; avatarStage.setPointerCapture(event.pointerId); });
+  avatarStage.addEventListener('pointermove', event => {
+    if (!dragging || !previous) return;
+    targetYaw += (event.clientX - previous.x) * .012; targetPitch = Math.max(-.35, Math.min(.35, targetPitch + (event.clientY - previous.y) * .006));
+    previous = {x:event.clientX, y:event.clientY};
+  });
+  const release = () => { dragging = false; previous = null; };
+  avatarStage.addEventListener('pointerup', release); avatarStage.addEventListener('pointercancel', release);
+  avatarStage.addEventListener('wheel', event => { event.preventDefault(); distance = Math.max(5.3, Math.min(10, distance + event.deltaY * .006)); }, {passive:false});
+  let last = performance.now();
+  function render(now){
+    const elapsed = (now - last) / 1000; last = now;
+    if (!dragging) targetYaw += elapsed * .23;
+    yaw += (targetYaw - yaw) * .1; pitch += (targetPitch - pitch) * .1;
+    avatar.rotation.set(pitch, yaw, 0); avatar.position.y = Math.sin(now * .0015) * .035;
+    floor.rotation.z -= elapsed * .22; camera.position.z += (distance - camera.position.z) * .08;
+    camera.lookAt(0, 1, 0); renderer.render(scene, camera); requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+}
+try { createAvatar3D(); } catch (error) { console.warn('Avatar 3D no disponible:', error); avatarStage.classList.add('avatar-unavailable'); }
 
 /* =================== ACTIVACIÓN + SONIDO DE ARRANQUE =================== */
 let actx;
@@ -306,12 +426,12 @@ function draw(t){
 requestAnimationFrame(draw);
 
 /* =================== MICRÃ“FONO + VOZ A TEXTO LOCAL =================== */
-let micOn = false, recorder = null, audioChunks = [], transcribeOnStop = false, ttsAudio = null;
+let micOn = false, recorder = null, audioChunks = [], transcribeOnStop = false, ttsSource = null;
 
 async function startMic(){
   try{
     stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}});
-  }catch(e){ return notice('No pude acceder al micrÃ³fono. Revisa los permisos del navegador.'); }
+  }catch(e){ return notice('No pude acceder al micrófono. Revisa los permisos del navegador.'); }
   const a = audio(); await a.resume();
   an = a.createAnalyser(); an.fftSize = 1024; an.smoothingTimeConstant = .78;
   a.createMediaStreamSource(stream).connect(an);
@@ -346,7 +466,7 @@ async function transcribeAudio(blob){
     const res = await fetch(CFG.STT_URL, {method:'POST', body:form});
     const data = await res.json(); if (!res.ok) throw new Error(data.detail || 'No se pudo transcribir el audio.');
     inp.value = (data.text || '').trim(); autosize();
-    if (inp.value) await submit(); else notice('No detectÃ© voz. Intenta hablar mÃ¡s cerca del micrÃ³fono.');
+    if (inp.value) await submit(); else notice('No detecté voz. Intenta hablar más cerca del micrófono.');
   }catch(err){ notice('Error de voz local: ' + err.message); }
   finally{ if (!busy) setState('idle'); }
 }
@@ -354,18 +474,38 @@ async function transcribeAudio(blob){
 async function speak(text){
   if (!CFG.VOICE_ENABLED || !text.trim()) return;
   try{
-    ttsAudio?.pause();
+    // El AudioContext se activa durante los toques de encendido. Reproducir el
+    // WAV de Piper aquí evita que WebView bloquee el saludo al haberse
+    // terminado ya el gesto del usuario.
+    const a = audio();
+    await a.resume();
+    ttsSource?.stop();
     const res = await fetch(CFG.TTS_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text})});
     if (!res.ok){ const data = await res.json().catch(()=>({})); throw new Error(data.detail || 'No se pudo sintetizar la voz.'); }
-    const url = URL.createObjectURL(await res.blob());
-    ttsAudio = new Audio(url); ttsAudio.onended = () => URL.revokeObjectURL(url);
-    await ttsAudio.play();
+    const buffer = await a.decodeAudioData(await res.arrayBuffer());
+    const source = a.createBufferSource();
+    source.buffer = buffer; source.connect(a.destination);
+    ttsSource = source;
+    source.onended = () => { if (ttsSource === source) ttsSource = null; };
+    source.start();
   }catch(err){ console.warn('TTS local:', err.message); }
 }
 
 /* =================== CHAT =================== */
 const esc = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const inline = s => esc(s).replace(/`([^`\n]+)`/g,'<code class="i">$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+function highlightCode(source){
+  const token = /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|(`(?:\\.|[^`])*`|'(?:\\.|[^'])*'|"(?:\\.|[^"])*")|(\b\d+(?:\.\d+)?\b)|(\b(?:async|await|break|case|catch|class|const|continue|def|default|else|enum|export|finally|for|from|function|if|import|in|interface|let|new|null|return|switch|throw|try|undefined|var|while|with|yield|True|False|None)\b)|(\b(?:Array|Boolean|Date|FastAPI|JSON|Math|Object|Promise|Response|String|console|dict|float|int|len|list|print|str)\b)|([{}\[\]();,.])/g;
+  let out = '', last = 0;
+  source.replace(token, (match, comment, string, number, keyword, builtin, punctuation, offset) => {
+    out += esc(source.slice(last, offset));
+    const type = comment ? 'comment' : string ? 'string' : number ? 'number' : keyword ? 'keyword' : builtin ? 'builtin' : 'punctuation';
+    out += `<span class="tok-${type}">${esc(match)}</span>`;
+    last = offset + match.length;
+    return match;
+  });
+  return out + esc(source.slice(last));
+}
 function render(text){
   let out = '', i = 0;
   for(;;){
@@ -373,10 +513,10 @@ function render(text){
     if (s < 0){ out += inline(text.slice(i)); break; }
     out += inline(text.slice(i, s));
     const nl = text.indexOf('\n', s); if (nl < 0) break;
-    const lang = text.slice(s+3, nl).trim() || 'cÃ³digo';
+    const lang = text.slice(s+3, nl).trim() || 'código';
     const e = text.indexOf('```', nl+1);
     const code = text.slice(nl+1, e < 0 ? undefined : e);
-    out += `<div class="code"><div class="bar"><i></i><i></i><i></i><span>${esc(lang)}</span><button type="button" class="cp">Copiar</button></div><pre><code>${esc(code)}</code></pre></div>`;
+    out += `<div class="code"><div class="bar"><i></i><i></i><i></i><span>${esc(lang)}</span><button type="button" class="cp">Copiar</button></div><pre><code>${highlightCode(code)}</code></pre></div>`;
     if (e < 0) break; i = e + 3;
   }
   return out;
@@ -392,7 +532,7 @@ function add(cls, html){
   log.appendChild(d); log.scrollTop = log.scrollHeight; return d;
 }
 const notice = t => add('bot err', esc(t));
-function greet(){ add('bot', 'Sistemas en lÃ­nea. Â¿En quÃ© te ayudo?'); }
+function greet(){ add('bot', 'Sistemas en línea. ¿En qué te ayudo?'); }
 
 async function* streamReply(msg){
   const res = await fetch(CFG.API_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: msg, history})});
@@ -408,7 +548,7 @@ async function* streamReply(msg){
   }
 }
 async function* demoReply(){
-  const t = 'Modo demo: no encontrÃ© tu API en `' + CFG.API_URL + '`. AsÃ­ se ve una respuesta con cÃ³digo:\n\n```python\nfrom fastapi import FastAPI\nfrom fastapi.responses import StreamingResponse\n\napp = FastAPI()\n\n@app.post("/api/chat")\nasync def chat(body: dict):\n    async def gen():\n        yield "Hola desde **Ollama**"\n    return StreamingResponse(gen(), media_type="text/plain")\n```\n\nCuando conectes el backend, esto desaparece.';
+  const t = 'Modo demo: no encontré tu API en `' + CFG.API_URL + '`. Así se ve una respuesta con código:\n\n```python\nfrom fastapi import FastAPI\nfrom fastapi.responses import StreamingResponse\n\napp = FastAPI()\n\n@app.post("/api/chat")\nasync def chat(body: dict):\n    async def gen():\n        yield "Hola desde **Ollama**"\n    return StreamingResponse(gen(), media_type="text/plain")\n```\n\nCuando conectes el backend, esto desaparece.';
   for (let i = 0; i < t.length; i += 3){ await new Promise(r => setTimeout(r, 22)); yield t.slice(i, i+3); }
 }
 
@@ -450,14 +590,13 @@ function revealApplication(){
   blinkT0 = performance.now();
   playBlink();
   greet();
+  startSystemStats();
 }
 function startBoot(waitFor){
   app.classList.remove('on', 'ui');
-  return play({ duration: 6, waitFor, onFadeStart: revealApplication });
+  return play({ duration: 6, waitFor, onFadeStart: revealApplication })
+    .then(() => speak(CFG.WELCOME_MESSAGE));
 }
-addEventListener('keydown', event => {
-  if (event.key.toLowerCase() === 'r' && !event.repeat && !busy) startBoot();
-});
 </script>
 </body>
 </html>

@@ -6,8 +6,9 @@
   "scripts": {
     "build:web": "node scripts/build-web.mjs",
     "tauri": "tauri",
-    "dev": "vite", 
-    "build": "vite build" 
+    "dev": "vite",
+    "build:frontend": "vite build",
+    "build": "tauri build"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0",

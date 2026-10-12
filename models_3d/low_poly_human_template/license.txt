@@ -1,0 +1,8 @@
+Model Information:
+* title:	Low Poly Human Template
+* source:	https://sketchfab.com/3d-models/low-poly-human-template-14b4607ec2e54411a315d093cee7d42b
+* author:	Godough (https://sketchfab.com/Godough)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

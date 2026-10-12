@@ -10,7 +10,9 @@ El chat original se ha restaurado e integrado con el boot WebGL actual. La panta
 - `style.css` separa los estilos del boot y de la interfaz del chat.
 - `boot.js` contiene exclusivamente la secuencia WebGL reutilizable.
 
-Se mantienen el chat SSE con Ollama, historial de conversación, renderizado de Markdown/código con botón de copiar, visualizador interactivo, micrófono/STT y voz TTS. El inicio requiere cinco toques: cada uno reproduce `Assets/Sound/golpe.mp3` y amplía la animación; el último reproduce `Assets/Sound/run2.mp3` y da paso al boot WebGL. Al finalizar, el orbe aparece con el parpadeo y sonido originales. Estos valores se pueden ajustar en `CFG` dentro de `index.html` (`TAP_SOUND`, `TAP_VOLUME`, `BOOT_SOUND`, `BOOT_VOLUME`, `BLINK_SOUND` y `BLINK_VOLUME`). Durante la aplicación, presiona `R` para volver a ejecutar el arranque (cuando no haya una respuesta en curso).
+Se mantienen el chat SSE con Ollama, historial de conversación, renderizado de Markdown/código con botón de copiar y resaltado de sintaxis, visualizador interactivo, micrófono/STT y voz TTS. El inicio requiere cinco toques: cada uno reproduce `Assets/Sound/golpe.mp3` y amplía la animación; el último reproduce `Assets/Sound/run2.mp3` y da paso al boot WebGL. Al finalizar, el orbe aparece con el parpadeo y sonido originales y Piper reproduce el saludo configurado en `WELCOME_MESSAGE`. Estos valores se pueden ajustar en `CFG` dentro de `index.html` (`TAP_SOUND`, `TAP_VOLUME`, `BOOT_SOUND`, `BOOT_VOLUME`, `BLINK_SOUND`, `BLINK_VOLUME` y `WELCOME_MESSAGE`). El boot se ejecuta solamente al entrar: la tecla `R` ya no lo reinicia.
+
+La interfaz incluye una consola responsiva estilo JARVIS, con telemetría prioritaria a la izquierda (CPU, RAM, disco y GPU) servida desde `GET /api/system/stats`. En Windows, CPU/RAM/disco se obtienen sin dependencias adicionales; la GPU se muestra como `N/D` si el driver no publica sus contadores WMI. El avatar se carga desde `models_3d/low_poly_human_template/scene.gltf` con Three.js, gira suavemente por sí mismo y permite rotación manual al arrastrarlo, además de acercamiento con la rueda del mouse.
 
 ## Inicio
 
@@ -56,6 +58,16 @@ La aplicación de escritorio y el navegador requieren que FastAPI siga activo en
 - Abrir aplicaciones está activo por defecto para este asistente local y se puede desactivar con `ENABLE_APP_LAUNCH=false`. Solo abre aliases conocidos o accesos descubiertos en el menú Inicio/registro; no existe ejecución arbitraria de comandos.
 - No expongas este servidor a la red: está pensado exclusivamente para `localhost` durante el prototipo.
 
+## Capacidades locales del asistente
+
+Además de abrir y buscar aplicaciones, Sellium puede consultar información local sin enviar datos fuera del equipo:
+
+- Componentes: CPU, GPU, RAM, discos, placa madre, BIOS y versión de Windows. Ejemplos: `¿Qué componentes tengo?`, `¿Qué GPU tengo?` o `¿Cuánta RAM tengo?`.
+- Fecha y hora locales: `¿Qué hora es?`, `¿Qué fecha es hoy?` o `¿En qué año estamos?`.
+- Memorias persistentes: `Recuerda que el 3 de octubre es mi cumple` y `¿Qué recuerdas?`. Se almacenan exclusivamente en `data/memories.json` dentro del workspace.
+
+Al abrir una aplicación o el navegador, el backend solicita a Windows restaurar y traer al frente la ventana creada. Windows puede impedir el cambio de foco en casos particulares por su política de seguridad, pero la aplicación se abre de todos modos.
+
 ## Voz local (Fase 2)
 
 El botón de micrófono del frontend ahora graba con `MediaRecorder`, envía el audio a `POST /api/stt` y Faster-Whisper lo transcribe localmente. Al finalizar una respuesta, el navegador pide `POST /api/tts` y reproduce el WAV generado localmente por Piper.
@@ -75,5 +87,7 @@ El proyecto incluye un contenedor Tauri v2 que empaqueta `index.html` y `Assets/
 npm install
 npm run build
 ```
+
+`npm run build` ejecuta el empaquetado Tauri completo; `npm run build:frontend` genera solo el frontend. La compilación de escritorio usa Vite para resolver Three.js, GSAP y el avatar 3D, y luego incorpora `Assets/`, incluidos los sonidos del boot. En escritorio, los mensajes se desplazan dentro de su panel: no redimensionan ni animan la estructura de la consola. El saludo se reproduce mediante el `AudioContext` desbloqueado con los toques iniciales, por lo que Piper no queda bloqueado por la política de autoplay de WebView.
 
 El instalador NSIS se crea en `src-tauri/target/release/bundle/nsis/`. El bundle incluye los archivos `es_ES-davefx-medium.onnx` y `es_ES-davefx-medium.onnx.json` como recursos; antes de compilar, ejecuta `python scripts/download_voice_models.py` para que estén disponibles. Esta primera versión nativa consume el backend local existente en `http://localhost:8000`; inicia FastAPI/Ollama antes de abrir la aplicación. La incorporación de Python, modelos de Whisper/Piper y Ollama como *sidecars* autocontenidos se realizará como una fase de empaquetado separada, porque añade varios GB al instalador.
